@@ -52,7 +52,7 @@ jmytc -m       (marks all new videos as watched)\n\
 You can edit %s to remove, rename or manually add channels. The fields must be separated by tabs.\n";
 
 
-_Noreturn static void __fail(char* file, const char* func, S32 line){
+_Noreturn static void __fail(char* file, const char* func, int line){
 	printf("Aborted at %s : %s : %d\n", file, func, line);
 	for (;;) exit(EXIT_FAILURE);
 }
@@ -502,7 +502,7 @@ static void config_load(){
 
 
 
-static S32 Num_digits(U64 val){
+static int Num_digits(U64 val){
 	if (val < UL(10)) return 1;
 	if (val < UL(100)) return 2;
 	if (val < UL(1000)) return 3;
@@ -525,16 +525,16 @@ static S32 Num_digits(U64 val){
 	return 20;
 }
 
-static U8 utoa(U64 uval, char* dst, S32 minimum_digits){
+static int utoa(U64 uval, char* dst, int minimum_digits){
 	assert(dst);
 	if (!uval){
-		for (S32 i = 0; i < minimum_digits; i++){
+		for (int i = 0; i < minimum_digits; i++){
 			*dst++ = '0';
 		}
 		*dst = 0;
 		return minimum_digits;
 	}
-	S32 ret, ndigits;
+	int ret, ndigits;
 	ndigits = Num_digits(uval);
 	if (ndigits < minimum_digits){
 		ndigits = minimum_digits;
@@ -566,7 +566,7 @@ static void Timestring(char* dst, U64 dst_size, U64 t_ms, U8 decimals){
 	mm = rem / 60000;
 	rem %= 60000;
 	ss = rem / 1000;
-	U8 p;
+	int p;
 	if (hh){ // 1:01:30.75
 		p = utoa(hh, dst, 1);
 		dst[p++] = ':';
@@ -1180,7 +1180,7 @@ static void cmd_print(char** ids, int idc){
 
 
 
-static S32 Exec_wait(char** cmd){
+static int Exec_wait(char** cmd){
 	if (!cmd){
 		die();
 	}
@@ -1193,7 +1193,7 @@ static S32 Exec_wait(char** cmd){
 		execvp(cmd[0], cmd);
 		for(;;)exit(EXIT_FAILURE);//exec never returns
 	} 
-	S32 status = -1;
+	int status = -1;
 	waitpid(-1, &status, 0);
 	return status;
 }
@@ -1278,7 +1278,7 @@ static void marking_action(char a, char** ids, int idc){
 			}
 			B mark = 0;
 			if (need_match){
-				for (S32 i = 0; i < idc; i++){
+				for (int i = 0; i < idc; i++){
 					if (str_match_beginning(channels[c].new_ids->entries[e].data, ids[i])){
 						goto _take_action;
 					}
