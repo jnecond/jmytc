@@ -36,7 +36,7 @@ Options:\n\
  [-h]  (prints this and exits)\n\
 \n\
 No video id after option:\n\
- [-d], [-m] select all new videos\n\
+ [-d], [-m], [-k], [-w] select all new videos\n\
 \n\
 Partial id for new videos:\n\
  [-d Xy], [-m Xy], [-w Xy], [-p Xy] select a new video of which id starts with Xy\n\

@@ -1,2 +1,31 @@
+-- jmytc version 1.00 --
+Options:
+ [-a]  (adds a channel subscription, takes ID, @name or link)
+ [-u]  (updates the list of new videos)
+ [-d]  (downloads video[s] with your download_cmd and marks them)
+ [-w]  (streams video[s] with your watch_cmd and marks them)
+ [-k]  (streams video[s] with your listen_cmd and marks them)
+ [-m]  (marks video[s] as watched/old)
+ [-p]  (prints video description)
+ [-l]  (lists all new/non-watched videos)
+ [-o]  (treat ID as an old/seen/marked video)
+ [-f]  (finds old videos with matching strings)
+ [-v]  (verbose output)
+ [-h]  (prints this and exits)
 
+No video id after option:
+ [-d], [-m], [-k], [-w] select all new videos
+
+Partial id for new videos:
+ [-d Xy], [-m Xy], [-w Xy], [-p Xy] select a new video of which id starts with Xy
+
+All options need to be in the first argument!
+Any following - will be treated as a part of a video id.
+
+Usage examples:
+jmytc -ul      (updates and lists new videos)
+jmytc -d -Xy   (downloads & marks new videos of which id starts with "-Xy")
+jmytc -m       (marks all new videos as watched)
+
+You can edit ~/.config/jmytc/channels.tsv to remove, rename or manually add channels. The fields must be separated by tabs.
 
