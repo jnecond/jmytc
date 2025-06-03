@@ -19,10 +19,8 @@
 #include "hash.h"
 #include "curl.c"
 
-#define	PROGRAM_NAME	"jmytc"
 
-
-static const char help_str[] = "-- "PROGRAM_NAME" version 1.00 --\n\
+static const char help_str[] = "-- jmytc version 1.00 --\n\
 Options:\n\
  [-a]  (adds a channel subscription, takes ID, @name or link)\n\
  [-u]  (updates the list of new videos)\n\
@@ -47,9 +45,9 @@ All options need to be in the first argument!\n\
 Any following - will be treated as a part of a video id.\n\
 \n\
 Usage examples:\n\
-"PROGRAM_NAME" -ul      (updates and lists new videos)\n\
-"PROGRAM_NAME" -d -Xy   (downloads & marks new videos of which id starts with \"-Xy\")\n\
-"PROGRAM_NAME" -m       (marks all new videos as watched)\n\
+jmytc -ul      (updates and lists new videos)\n\
+jmytc -d -Xy   (downloads & marks new videos of which id starts with \"-Xy\")\n\
+jmytc -m       (marks all new videos as watched)\n\
 \n\
 You can edit %s to remove, rename or manually add channels. The fields must be separated by tabs.\n";
 
@@ -128,8 +126,8 @@ Paths_ Paths = {0};
 #define YT_VIDEOLINK_SIZE     127
 #define YT_VIDEOLINK_POS      28
 char yt_video_link[YT_VIDEOLINK_SIZE+1] = "https://youtube.com/watch?v=XXXXXXXXXXX";
-always_il void yt_video_link_set(char* chid){
-	snprintf(yt_video_link+YT_VIDEOLINK_POS, YT_VIDEOLINK_SIZE-YT_VIDEOLINK_POS, "%s", chid);
+always_il void yt_video_link_set(char* id){
+	snprintf(yt_video_link+YT_VIDEOLINK_POS, YT_VIDEOLINK_SIZE-YT_VIDEOLINK_POS, "%s", id);
 }
 
 #define FEEDLINK_SIZE   127
@@ -1271,7 +1269,6 @@ static void marking_action(char a, char** ids, int idc){
 		need_match = 0; // all new videos
 	}
 	for (int c = 0; c < channels_count; c++){
-		//_start:
 		if (channels[c].new_ids->num_used < 1){
 			continue;
 		}
@@ -1308,14 +1305,10 @@ static void marking_action(char a, char** ids, int idc){
 					channels[c].new_ids->entries[e].data,
 					channels[c].new_ids->entries[e].data_size, 0);
 				ent->free_data_on_remove = 1;
-				// TODO: reread old ids in case mark was used while downloading/watching
 				FILE* fp = Fopen(channels[c].path_old_vid_ids_file, "a");
 				fprintf(fp, "%s\n", (char*)channels[c].new_ids->entries[e].data);
 				Fclose(fp);
-				
-				// TODO: reread new ids in case update was used while downloading/watching
-				// load_new_ids_file(c);
-				// have to jump back if the set is modified... or something
+
 				channels[c].new_ids->entries[e].free_data_on_remove = 0;
 				Hash_set_remove_by_index(channels[c].new_ids, e);
 				fp = Fopen(channels[c].path_new_vid_ids_file, "w");
@@ -1680,8 +1673,8 @@ int main(int argc, char** argv){
 		printf("XDG_CONFIG_HOME not defined!");
 		xdg_config_dir_path = "~";
 	}
-	Paths.config_dir = Malloc(strlen(xdg_config_dir_path)+4+strlen(PROGRAM_NAME));
-	sprintf(Paths.config_dir, "%s/%s", xdg_config_dir_path, PROGRAM_NAME);
+	Paths.config_dir = Malloc(strlen(xdg_config_dir_path)+4+strlen("jmytc"));
+	sprintf(Paths.config_dir, "%s/%s", xdg_config_dir_path, "jmytc");
 	if (Options.verbose) printf("config dir: %s\n", Paths.config_dir);
 	if (mkdir(Paths.config_dir, 0777)){
 		if (errno != EEXIST){
